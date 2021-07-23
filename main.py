@@ -11,7 +11,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if "twitter.com" in message.content and not message.author.bot:
+    if "https://twitter.com/" in message.content and not message.author.bot:
         print('time to correct that shit')
         text = message.content
         position = text.find("twitter.com")
