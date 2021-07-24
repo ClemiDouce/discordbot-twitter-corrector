@@ -36,6 +36,7 @@ async def media_gallery(ctx, arg: str):
             media_list = final_data['includes']['media']
             for media in media_list:
                 await ctx.send(media['url'])
+            await ctx.send(f"Source : <{arg}>")
             await ctx.message.delete()
         except KeyError:
             await ctx.send("Aucun media dans ce tweet")
