@@ -1,12 +1,17 @@
 from discord.ext import commands
+import requests
+import json
 import os
 
 bot = commands.Bot(command_prefix='!')
 
+header = {
+    'Authorization': 'Bearer ' + os.environ.get('bearer-token')
+}
+
 @bot.event
 async def on_ready():
     print('Ready')
-
 
 @bot.command(name='fx')
 async def video(ctx, arg: str):
@@ -17,5 +22,23 @@ async def video(ctx, arg: str):
         final_string = text[:position] + "fx" + text[position:]
         await ctx.send(f"{ctx.author.display_name} a posté ceci {final_string}")
         await ctx.message.delete()
+
+def get_tweet_id(tweet_url):
+    return tweet_url.split('/')[-1].split('?')[0]
+
+@bot.command(name='gallery')
+async def media_gallery(ctx, arg: str):
+    if "https://twitter.com/" in arg:
+        link = f"https://api.twitter.com/2/tweets/{get_tweet_id(arg)}?expansions=attachments.media_keys&media.fields=preview_image_url,url"
+        data = requests.get(link, headers=header)
+        try:
+            final_data = json.loads(data.text)
+            media_list = final_data['includes']['media']
+            for media in media_list:
+                await ctx.send(media['url'])
+            await ctx.message.delete()
+        except KeyError:
+            await ctx.send("Aucun media dans ce tweet")
+
 
 bot.run(os.environ.get("bot-token"))
