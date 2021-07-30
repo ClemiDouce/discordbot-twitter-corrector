@@ -3,6 +3,8 @@ import requests
 import json
 import os
 
+from utils import get_tweet_id
+
 bot = commands.Bot(command_prefix='!')
 
 header = {
@@ -12,6 +14,7 @@ header = {
 @bot.event
 async def on_ready():
     print('Ready')
+
 
 @bot.command(name='fx')
 async def video(ctx, arg: str):
@@ -23,8 +26,6 @@ async def video(ctx, arg: str):
         await ctx.send(f"{ctx.author.display_name} a posté ceci {final_string}")
         await ctx.message.delete()
 
-def get_tweet_id(tweet_url):
-    return tweet_url.split('/')[-1].split('?')[0]
 
 @bot.command(name='gallery')
 async def media_gallery(ctx, arg: str):
