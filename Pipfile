@@ -8,6 +8,7 @@ name = "pypi"
 python-decouple = "*"
 requests = "*"
 python-dotenv = "*"
+pillow = "*"
 
 [dev-packages]
 
