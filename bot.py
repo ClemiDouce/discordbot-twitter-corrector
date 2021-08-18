@@ -28,13 +28,14 @@ class DiscordClient(discord.Client):
     async def on_message(self, message):
         splitted = message.content.split()
         if len(message.attachments) > 0 and message.author.bot == False:
-            with io.BytesIO() as image_binary:
-                image = await resize_img(message.attachments[0].url, self.scale_mode)
-                image.save(image_binary, 'PNG')
-                image_binary.seek(0)
-                await message.channel.send(file=discord.File(fp=image_binary, filename='image.png'))
-            await message.delete()
-            print(message.attachments)
+            if 'sticker' in message.attachments.name:
+                with io.BytesIO() as image_binary:
+                    image = await resize_img(message.attachments[0].url, self.scale_mode)
+                    image.save(image_binary, 'PNG')
+                    image_binary.seek(0)
+                    await message.channel.send(file=discord.File(fp=image_binary, filename='image.png'))
+                await message.delete()
+                print(message.attachments)
         if message.content.startswith('!scalesize'):
             if splitted[1].isdigit():
                 self.scale_mode = int(splitted[1])
