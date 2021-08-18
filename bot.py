@@ -8,10 +8,10 @@ from dotenv import load_dotenv
 from utils import get_tweet_info
 from image_utils import resize_img
 
+sticker_names = ['sticker', 'inconnu']
 
 load_dotenv()
 TOKEN = os.getenv('bot-token')
-
 HEADER = {
     'Authorization': 'Bearer ' + os.getenv('bearer-token')
 }
@@ -28,7 +28,7 @@ class DiscordClient(discord.Client):
     async def on_message(self, message):
         splitted = message.content.split()
         if len(message.attachments) > 0 and message.author.bot == False:
-            if 'sticker' in message.attachments.name:
+            if any([substring in message.attachments[0].filename for substring in sticker_names]):
                 with io.BytesIO() as image_binary:
                     image = await resize_img(message.attachments[0].url, self.scale_mode)
                     image.save(image_binary, 'PNG')
