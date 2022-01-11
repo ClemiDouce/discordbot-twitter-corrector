@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from utils import get_tweet_info
 from image_utils import resize_img
 
-sticker_names = ['sticker', 'inconnu']
+# sticker_names = ['sticker', 'inconnu']
 
 load_dotenv()
 TOKEN = os.getenv('bot-token')
@@ -24,7 +24,7 @@ class DiscordClient(discord.Client):
     async def on_ready(self):
         print('ready')
 
-    def display_to_gallery(self, message, link):
+    async def display_to_gallery(self, message, link):
         if "https://twitter.com/" in link:
             data = await get_tweet_info(link, HEADER)
             try:
@@ -41,7 +41,7 @@ class DiscordClient(discord.Client):
         splitted = message.content.split()
 
         if message.content.startswith('!gallery'):
-            self.display_to_gallery(message, splitted[1])
+            await self.display_to_gallery(message, splitted[1])
 
         # if len(message.attachments) > 0 and message.author.bot == False:
         #     if any([substring in message.attachments[0].filename for substring in sticker_names]):
