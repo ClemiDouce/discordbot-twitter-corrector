@@ -5,9 +5,7 @@ import discord
 from dotenv import load_dotenv
 
 from utils import get_tweet_info
-from image_utils import resize_img
-
-# sticker_names = ['sticker', 'inconnu']
+import wordlegame
 
 load_dotenv()
 TOKEN = os.getenv('bot-token')
@@ -38,10 +36,23 @@ class DiscordClient(discord.Client):
                 await message.channel.send("Aucun media dans ce tweet")
 
     async def on_message(self, message):
+        if message.author.bot == True:
+            return
         splitted = message.content.split()
 
         if message.content.startswith('!gallery'):
             await self.display_to_gallery(message, splitted[1])
+        elif message.content.startswith("!wordle"):
+            if splitted[1] == "new":
+                await wordlegame.start_game(message)
+            if splitted[1] == "list":
+                await wordlegame.list_game(message)
+            if splitted[1] == "play":
+                if len(splitted) == 4 and splitted[2].isnumeric():
+                    await wordlegame.play_game(message, int(splitted[2]), splitted[3])
+                else:
+                    await message.channel.send("Mauvais nombre d'argument. ex: !wordle game [index] [mot]")
+
 
         # if len(message.attachments) > 0 and message.author.bot == False:
         #     if any([substring in message.attachments[0].filename for substring in sticker_names]):
